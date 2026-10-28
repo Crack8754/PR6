@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:3000
+# Після POST замініть eventId значенням id із відповіді.
+@eventId = 550e8400-e29b-41d4-a716-446655440000
+@participantId = 22222222-2222-4222-8222-222222222222
+
+### Категорії — 200
+GET {{baseUrl}}/categories
+
+### Створення — 201 + Location
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{
+  "title": "Лекція про REST",
+  "description": "Основи API",
+  "categoryId": "11111111-1111-4111-8111-111111111111"
+}
+
+### Список — 200
+GET {{baseUrl}}/events
+
+### Одна подія — 200
+GET {{baseUrl}}/events/{{eventId}}
+
+### PATCH — 200
+PATCH {{baseUrl}}/events/{{eventId}}
+Content-Type: application/json
+
+{"title":"Практикум із REST"}
+
+### Без title — 400
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{"categoryId":"11111111-1111-4111-8111-111111111111"}
+
+### Реєстрація — 201 + Location
+POST {{baseUrl}}/events/{{eventId}}/registrations
+Content-Type: application/json
+
+{"participantId":"{{participantId}}"}
+
+### Повтор — 409
+POST {{baseUrl}}/events/{{eventId}}/registrations
+Content-Type: application/json
+
+{"participantId":"{{participantId}}"}
+
+### Список реєстрацій — 200
+GET {{baseUrl}}/events/{{eventId}}/registrations
+
+### Без participantId — 400
+POST {{baseUrl}}/events/{{eventId}}/registrations
+Content-Type: application/json
+
+{}
+
+### Відсутня подія — 404
+POST {{baseUrl}}/events/99999999-9999-4999-8999-999999999999/registrations
+Content-Type: application/json
+
+{"participantId":"{{participantId}}"}
+
+### Видалення — 204, без тіла
+DELETE {{baseUrl}}/events/{{eventId}}
+
+### Після видалення — 404
+GET {{baseUrl}}/events/{{eventId}}
